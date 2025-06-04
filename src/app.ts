@@ -1,6 +1,7 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import userRoutes from './routes/userRoutes';
 import playerRoutes from './routes/playerRoutes';
 
 // Load environment variables
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Routes
+app.use('/api/users', userRoutes);
 app.use('/api/players', playerRoutes);
 
 // Basic route for testing
