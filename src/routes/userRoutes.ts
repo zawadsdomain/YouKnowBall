@@ -13,4 +13,9 @@ router.get('/:userId', async (req: Request, res: Response) => {
     await userController.getUserById(req, res);
 });
 
+// POST /api/users/signup -- create a new user
+router.post('/signup', async (req: Request, res: Response) => {
+    await userController.createUser(req, res);
+});
+
 export default router; 

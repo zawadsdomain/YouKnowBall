@@ -29,3 +29,6 @@ coverage/
 
 # TypeScript
 *.tsbuildinfo 
+
+# Firebase 
+serviceAccountKey.json

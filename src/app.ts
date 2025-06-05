@@ -1,8 +1,11 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+
+// Route imports
 import userRoutes from './routes/userRoutes';
 import playerRoutes from './routes/playerRoutes';
+import transactionRoutes from './routes/transactionRoutes';
 
 // Load environment variables
 dotenv.config();
@@ -18,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/players', playerRoutes);
-
+app.use('/api/transactions', transactionRoutes);
 // Basic route for testing
 app.get('/api/', (req: Request, res: Response) => {
   res.json({ message: 'Welcome to You Know Ball API 🏀' });
