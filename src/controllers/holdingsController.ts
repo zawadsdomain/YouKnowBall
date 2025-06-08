@@ -9,6 +9,8 @@ interface Holding {
     mostRecentPurchase: string;
 }
 
+// this should only be used to fetch the users holdings. 
+
 export const holdingsController = {
 
     getAllHoldings: async (req: Request, res: Response) => {
