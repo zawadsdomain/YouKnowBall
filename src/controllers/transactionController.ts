@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { transactionsRef } from '../config/firestore';
+import { holdingsRef } from '../config/firestore';
 import { Timestamp } from 'firebase-admin/firestore';
 
 // All Columns in the transactions collection
@@ -38,6 +39,8 @@ export const transactionController = {
         }
     },
     // POST a new transaction to the transaction log 
+
+    // Add that transaction to the users' holdings as well. 
     appendTransaction: async (req: Request, res: Response) => {
         try {
             const { userId, playerId, transactionType, quantity, price } = req.body;
@@ -53,6 +56,19 @@ export const transactionController = {
 
             const transactionDoc = await transactionRef.get();
             const transactionData = transactionDoc.data();
+
+            // Add that transaction to the users' holdings as well. 
+            const holdingId = `${userId}_${playerId}`;
+            const holdingRef = holdingsRef.doc(holdingId);
+            const holdingDoc = await holdingRef.get();
+            // user has a holding for this player.
+            if (holdingDoc.exists) {
+                
+            }
+
+
+
+
 
             res.status(201).json({ // successful creation
                 success: true,
