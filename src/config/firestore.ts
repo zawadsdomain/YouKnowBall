@@ -9,5 +9,6 @@ export const playersRef = db.collection('players');
 
 export const transactionsRef = db.collection('transactions');
 export const portfoliosRef = db.collection('portfolios');
+export const holdingsRef = db.collection('holdings');
 
 // You can add more collection references as needed 
