@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes';
 import playerRoutes from './routes/playerRoutes';
 import transactionRoutes from './routes/transactionRoutes';
+import holdingsRoutes from './routes/holdingsRoutes';
 
 // Load environment variables
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/users', userRoutes);
 app.use('/api/players', playerRoutes);
 app.use('/api/transactions', transactionRoutes);
+app.use('/api/holdings', holdingsRoutes);
 // Basic route for testing
 app.get('/api/', (req: Request, res: Response) => {
   res.json({ message: 'Welcome to You Know Ball API 🏀' });

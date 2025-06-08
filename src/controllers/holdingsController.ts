@@ -16,7 +16,7 @@ export const holdingsController = {
     getAllHoldings: async (req: Request, res: Response) => {
 
         try {
-            const { userId } = req.body; 
+            const { userId } = req.params; 
 
             // Fetch all holdings for the specified user
             const holdings = await holdingsRef.where('userId', '==', userId).get();

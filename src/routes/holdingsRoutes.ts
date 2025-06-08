@@ -3,7 +3,7 @@ import { holdingsController } from '../controllers/holdingsController';
 const router: Router = Router();
 
 // GET all holdings for a specified userID
-router.get('/', async (req: Request, res: Response) => {
+router.get('/:userId', async (req: Request, res: Response) => {
     await holdingsController.getAllHoldings(req, res);
 });
 

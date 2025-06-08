@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-
+import { playersRef } from '../config/firestore';
 interface Player {
     id: string;
     name: string;
@@ -21,40 +21,15 @@ export const playerController = {
 
     getAllPlayers: async (req: Request, res: Response) => {
         try {
-
-            // TODO: Implement Firebase fetch for all players. For now, return mock data.
-
-            const mockPlayers: Player[] = [
-                {
-                    id: '1',
-                    name: 'Cade Cunningham',
-                    team: 'Detroit Pistons',
-                    position: 'PG',
-                    currentPrice: 10000,
-                    stats: {
-                        points: 20,
-                        rebounds: 5,
-                        assists: 10
-                    }
-                },
-
-                {
-                    id: '2', 
-                    name: 'Jaden McDaniels',
-                    team: 'Minnesota Timberwolves',
-                    position: 'PF',
-                    currentPrice: 5000,
-                    stats: {
-                        points: 15,
-                        rebounds: 7,
-                        assists: 3
-                    }
-                }
-            ];
+            const players = await playersRef.get();
+            const playersData = players.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data()
+            }));
 
             res.json({
                 success: true,
-                data: mockPlayers
+                data: playersData
             });
         } catch (error) {
             res.status(500).json({
@@ -104,6 +79,41 @@ export const playerController = {
                 message: 'Error fetching player',
                 error: error instanceof Error ? error.message : 'Unknown error'
               });
+            }
+          },
+
+          createPlayer: async (req: Request, res: Response) => {
+            try {
+                const { name, team, position, currentPrice, stats } = req.body;
+
+                const playerData = {
+                    name,
+                    team,
+                    position,
+                    currentPrice: currentPrice || 1000,
+                    stats: stats || {
+                        points: 0,
+                        rebounds: 0,
+                        assists: 0
+                    }
+                };
+
+                const playerRef = await playersRef.add(playerData);
+                const playerDoc = await playerRef.get();
+
+                res.status(201).json({
+                    success: true,
+                    data: {
+                        id: playerDoc.id,
+                        ...playerData
+                    }
+                });
+            } catch (error) {
+                res.status(500).json({
+                    success: false,
+                    message: 'Error creating player',
+                    error: error instanceof Error ? error.message : 'An unknown error occurred'
+                });
             }
           }
 };
