@@ -1,4 +1,4 @@
-# You Know Ball -- Zawad Chowdhury🏀
+# You Know Ball -- Zawad Chowdhury 🏀
 
 A virtual stock market for NBA players where users can buy and sell player "shares" using virtual currency.
 
