@@ -57,13 +57,52 @@ export const transactionController = {
             const transactionDoc = await transactionRef.get();
             const transactionData = transactionDoc.data();
 
+            if (!transactionData) {
+                throw new Error('Transaction data not found');
+            }
+
             // Add that transaction to the users' holdings as well. 
             const holdingId = `${userId}_${playerId}`;
             const holdingRef = holdingsRef.doc(holdingId);
             const holdingDoc = await holdingRef.get();
             // user has a holding for this player.
             if (holdingDoc.exists) {
-                
+                // Update existing holding.
+                const currentHolding = holdingDoc.data();
+                if (!currentHolding) {
+                    throw new Error('Holding data not found');
+                }
+                // For selling, check if user has enough shares
+                if (transactionType === 'sell' && currentHolding.quantity < quantity) {
+                    throw new Error('Insufficient shares to sell');
+                }
+                const newQuantity = transactionType === 'buy' ? currentHolding.quantity + quantity
+                : currentHolding.quantity - quantity;
+
+                const newAvgPrice = (currentHolding.avgPrice * currentHolding.quantity + price * quantity) / newQuantity;
+
+                await holdingRef.update({
+                    quantity: newQuantity,
+                    avgPrice: newAvgPrice,
+                    updatedAt: Timestamp.now()
+                });
+
+            } else {
+                // create new holding. 
+
+                // Only allow buying for new holdings.
+                if (transactionType === 'sell') {
+                    throw new Error('Cannot sell shares you do not own');
+                }
+
+                await holdingRef.set({ // uses the holdingId as the document id, as it is setting it here.
+                    userId,
+                    playerId,
+                    quantity: quantity, // always buying -> positive quantity. 
+                    avgPrice: price,
+                    mostRecentPurchase: transactionType === 'buy' ? transactionData.timestamp : null,
+                    updatedAt: Timestamp.now()
+                });
             }
 
 
