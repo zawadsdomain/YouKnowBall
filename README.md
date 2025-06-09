@@ -1,4 +1,4 @@
-# You Know Ball 🏀
+# You Know Ball -- Zawad Chowdhury 🏀
 
 A virtual stock market for NBA players where users can buy and sell player "shares" using virtual currency.
 
@@ -50,7 +50,3 @@ src/
 - `npm run build`: Build for production
 - `npm start`: Start production server
 - `npm test`: Run tests
-
-## License
-
-ISC
