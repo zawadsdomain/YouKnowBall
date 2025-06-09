@@ -45,20 +45,22 @@ export const userController = {
         try {
             const { userId } = req.params;
 
-            // TODO: Implement Firebase fetch for user by id. For now, return mock data.
+            // Implement firebase fetch for user by id.
 
-            const mockUser: User = {
-                id: userId,
-                username: 'John Doe',
-                email: 'john.doe@example.com',
-                balance: 1000,
-                createdAt: new Date(),
-                updatedAt: new Date()
-            };
+            const userDoc = await usersRef.doc(userId).get();
+            if (!userDoc.exists) {
+                res.status(404).json({
+                    success: false,
+                    message: 'User not found'
+                });
+
+            }
+
+            const userData = userDoc.data();
             
             res.json({
                 success: true, 
-                data: mockUser
+                data: userData
             });
 
         } catch (error) {
