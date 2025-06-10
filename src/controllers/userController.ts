@@ -44,9 +44,16 @@ export const userController = {
     getUserById: async (req: Request, res: Response) => {
         try {
             const { userId } = req.params;
+            const authenticatedUserId = req.user?.uid;
 
-            // Implement firebase fetch for user by id.
+            if (!authenticatedUserId) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Unauthorized: User ID is required'
+                });
+            }
 
+            // User is authenticated, can view any profile
             const userDoc = await usersRef.doc(userId).get();
             if (!userDoc.exists) {
                 res.status(404).json({
