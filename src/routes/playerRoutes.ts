@@ -1,7 +1,11 @@
-import { Router, Request, Response } from 'express';
-import { playerController } from '../controllers/playerController';
+import { Router, Request, Response, RequestHandler } from 'express';
+import { playerController } from '../controllers/playerController'; 
+import { authenticateUser } from '@/middleware/authMiddleware';
 
 const router = Router();
+
+// Apply middleware to all routes here.
+router.use(authenticateUser as RequestHandler);
 
 // GET /api/players -- Get all players
 router.get('/', async (req: Request, res: Response) => {

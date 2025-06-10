@@ -48,4 +48,4 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
             message: 'Unauthorized: Invalid token'
         });
     }
-}
+};
