@@ -8,10 +8,10 @@ declare global {
             user?: {
                 uid: string;
                 email?: string;
-                username?: string;
-                password?: string;
+
 
                 // Add other properties as needed. + check if the ones above are needed.
+                // Do not add password. 
             };
         }
     }
@@ -37,8 +37,6 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
         req.user = {
             uid: decodedToken.uid,
             email: decodedToken.email,
-            username: decodedToken.username,
-            password: decodedToken.password
         };
 
         next();
