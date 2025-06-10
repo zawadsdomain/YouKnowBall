@@ -18,14 +18,7 @@ export const transactionController = {
     // Get all transactions
     getAllTransactions: async (req: Request, res: Response) => {
         try {
-            const userId = req.user?.uid;
-            
-            if (!userId) {
-                return res.status(401).json({
-                    success: false,
-                    message: 'Unauthorized: User ID is required'
-                });
-            }
+
 
             // Get all transactions (not filtered by user)
             const transactions = await transactionsRef.get();
@@ -50,15 +43,7 @@ export const transactionController = {
     // POST a new transaction
     appendTransaction: async (req: Request, res: Response) => {
         try {
-            const userId = req.user?.uid;
-            const { playerId, transactionType, quantity, price } = req.body;
-
-            if (!userId) {
-                return res.status(401).json({
-                    success: false,
-                    message: 'Unauthorized: User ID is required'
-                });
-            }
+            const { userId, playerId, transactionType, quantity, price } = req.body;
 
             const result = await transactionService.processTransaction(
                 userId,

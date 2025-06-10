@@ -46,23 +46,14 @@ export const userController = {
     getUserById: async (req: Request, res: Response) => {
         try {
             const { userId } = req.params;
-            const authenticatedUserId = req.user?.uid;
 
-            if (!authenticatedUserId) {
-                return res.status(401).json({
-                    success: false,
-                    message: 'Unauthorized: User ID is required'
-                });
-            }
-
-            // User is authenticated, can view any profile
+            // Get user document
             const userDoc = await usersRef.doc(userId).get();
             if (!userDoc.exists) {
-                res.status(404).json({
+                return res.status(404).json({
                     success: false,
                     message: 'User not found'
                 });
-
             }
 
             const userData = userDoc.data();
@@ -74,7 +65,7 @@ export const userController = {
 
         } catch (error) {
             res.status(500).json({
-                success:false,
+                success: false,
                 message: 'Error fetching user',
                 error: error instanceof Error ? error.message : 'An unknown error occurred'
             });

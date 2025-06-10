@@ -30,9 +30,11 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
         }
 
         const token = authHeader.split('Bearer ')[1];
+        console.log('Token received:', token);
 
         // Decode the token to get the user ID
         const decodedToken = jwt.decode(token) as { uid: string };
+        console.log('Decoded token:', decodedToken);
         
         if (!decodedToken || !decodedToken.uid) {
             return res.status(401).json({
@@ -43,12 +45,14 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
 
         // Verify the user exists in Firebase
         const userRecord = await auth.getUser(decodedToken.uid);
+        console.log('User record:', userRecord);
 
         // Add the user to the request object
         req.user = {
             uid: userRecord.uid,
             email: userRecord.email,
         };
+        console.log('Request user set to:', req.user);
 
         next();
 

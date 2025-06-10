@@ -1,13 +1,14 @@
-import { Router, Request, Response, RequestHandler } from 'express';
+import { Router, Request, Response } from 'express';
 import { holdingsController } from '../controllers/holdingsController';
-import { authenticateUser } from '../middleware/authMiddleware';
 
-const router: Router = Router();
+const router = Router();
 
-// Apply middleware to all routes here.
-router.use(authenticateUser as RequestHandler);
+// GET /api/holdings -- Get all holdings
+router.get('/', async (req: Request, res: Response) => {
+    await holdingsController.getAllHoldings(req, res);
+});
 
-// GET all holdings for a specified userID
+// GET /api/holdings/:userId -- Get holdings for a specific user
 router.get('/:userId', async (req: Request, res: Response) => {
     await holdingsController.getAllHoldings(req, res);
 });
