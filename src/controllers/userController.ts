@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { usersRef } from '../config/firestore';
+import { auth } from '../utils/firestore';
+import { Auth } from 'firebase-admin/auth';
 
 interface User {
     id: string;  // Changed to string since Firestore uses string IDs
@@ -81,26 +83,31 @@ export const userController = {
 
     createUser: async (req: Request, res: Response) => {
         try {
-            const { username, email, balance = 10000 } = req.body;
+            const { email, password, username } = req.body;
 
-            // Create new user document using usersRef
-            const userRef = await usersRef.add({
+            // Create user in Firebase Auth
+            const userRecord = await auth.createUser({
+                email,
+                password,
+                displayName: username
+            });
+
+            // Create user document in Firestore
+            await usersRef.doc(userRecord.uid).set({
                 username,
                 email,
-                balance,
+                balance: 10000,
                 createdAt: new Date(),
                 updatedAt: new Date()
             });
 
-            // Get the created user
-            const userDoc = await userRef.get();
-            const userData = userDoc.data();
-
             res.status(201).json({
                 success: true,
+                message: 'User created successfully',
                 data: {
-                    id: userRef.id,
-                    ...userData
+                    uid: userRecord.uid,
+                    email: userRecord.email,
+                    username: userRecord.displayName
                 }
             });
 
@@ -108,6 +115,33 @@ export const userController = {
             res.status(500).json({
                 success: false,
                 message: 'Error creating user',
+                error: error instanceof Error ? error.message : 'An unknown error occurred'
+            });
+        }
+    },
+
+    loginUser: async (req: Request, res: Response) => {
+        try {
+            const { email, password } = req.body;
+            
+            // Get user by email
+            const userRecord = await auth.getUserByEmail(email);
+            
+            // Create a custom token
+            const token = await auth.createCustomToken(userRecord.uid);
+
+            res.json({
+                success: true,
+                data: { 
+                    token,
+                    userId: userRecord.uid,
+                    email: userRecord.email
+                }
+            });
+        } catch (error) {
+            res.status(401).json({
+                success: false,
+                message: 'Invalid credentials',
                 error: error instanceof Error ? error.message : 'An unknown error occurred'
             });
         }

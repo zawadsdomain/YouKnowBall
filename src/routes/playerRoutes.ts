@@ -1,6 +1,6 @@
 import { Router, Request, Response, RequestHandler } from 'express';
 import { playerController } from '../controllers/playerController'; 
-import { authenticateUser } from '@/middleware/authMiddleware';
+import { authenticateUser } from '../middleware/authMiddleware';
 
 const router = Router();
 
