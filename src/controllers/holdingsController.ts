@@ -16,8 +16,14 @@ export const holdingsController = {
     getAllHoldings: async (req: Request, res: Response) => {
 
         try {
-            const { userId } = req.params; 
+            const userId = req.user?.uid;
 
+            if (!userId) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Unauthorized: User ID is required'
+                });
+            }
             // Fetch all holdings for the specified user
             const holdings = await holdingsRef.where('userId', '==', userId).get();
             const holdingsData = holdings.docs.map((doc) => ({
