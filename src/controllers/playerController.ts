@@ -1,31 +1,17 @@
 import { Request, Response } from 'express';
 import { playersRef } from '../config/firestore';
-interface Player {
-    id: string;
-    name: string;
-    team: string;
-    position: string;
-    currentPrice: number;
-
-    stats: {
-        points: number;
-        rebounds: number;
-        assists: number;
-        // add more stats later.
-    }
-
-}
+import { Player } from '../types/player';
+import { seedPlayers, clearPlayers } from '../services/playerSeedService';
 
 export const playerController = {
-
-
+    // Get all players
     getAllPlayers: async (req: Request, res: Response) => {
         try {
             const players = await playersRef.get();
             const playersData = players.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data()
-            }));
+            })) as Player[];
 
             res.json({
                 success: true,
@@ -38,82 +24,72 @@ export const playerController = {
                 error: error instanceof Error ? error.message : 'An unknown error occurred'
             });
         }
-    }, 
+    },
 
+    // Get player by ID
     getPlayerById: async (req: Request, res: Response) => {
         try {
-            const { playerId } = req.params;
+            const { id } = req.params;
+            const playerDoc = await playersRef.doc(id).get();
 
-            // TODO: implement firebase fetch for player by id. For now, return mock data.
-
-            const mockPlayer: Player = {
-                id: playerId,
-                name: 'Cade Cunningham',
-                team: 'Detroit Pistons',
-                position: 'PG',
-                currentPrice: 10000,
-                stats: {
-                    points: 20,
-                    rebounds: 5,
-                    assists: 10
-                }
-            };
-
-            if(!mockPlayer) {
+            if (!playerDoc.exists) {
                 return res.status(404).json({
                     success: false,
                     message: 'Player not found'
-
                 });
             }
 
-
+            const playerData = {
+                id: playerDoc.id,
+                ...playerDoc.data()
+            } as Player;
 
             res.json({
                 success: true,
-                data: mockPlayer
-              });
-            } catch (error) {
-              res.status(500).json({
+                data: playerData
+            });
+        } catch (error) {
+            res.status(500).json({
                 success: false,
                 message: 'Error fetching player',
-                error: error instanceof Error ? error.message : 'Unknown error'
-              });
-            }
-          },
+                error: error instanceof Error ? error.message : 'An unknown error occurred'
+            });
+        }
+    },
 
-          createPlayer: async (req: Request, res: Response) => {
-            try {
-                const { name, team, position, currentPrice, stats } = req.body;
+    // Seed players (for development/testing)
+    seedPlayers: async (req: Request, res: Response) => {
+        try {
+            const result = await seedPlayers();
+            res.json({
+                success: true,
+                message: result.message,
+                count: result.count
+            });
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: 'Error seeding players',
+                error: error instanceof Error ? error.message : 'An unknown error occurred'
+            });
+        }
+    },
 
-                const playerData = {
-                    name,
-                    team,
-                    position,
-                    currentPrice: currentPrice || 1000,
-                    stats: stats || {
-                        points: 0,
-                        rebounds: 0,
-                        assists: 0
-                    }
-                };
-
-                const playerRef = await playersRef.add(playerData);
-                const playerDoc = await playerRef.get();
-
-                res.status(201).json({
-                    success: true,
-                    data: {
-                        id: playerDoc.id,
-                        ...playerData
-                    }
-                });
-            } catch (error) {
-                res.status(500).json({
-                    success: false,
-                    message: 'Error creating player',
-                    error: error instanceof Error ? error.message : 'An unknown error occurred'
-                });
-            }
-          }
+    // Clear players (for development/testing)
+    clearPlayers: async (req: Request, res: Response) => {
+        try {
+            const result = await clearPlayers();
+            res.json({
+                success: true,
+                message: result.message,
+                count: result.count
+            });
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: 'Error clearing players',
+                error: error instanceof Error ? error.message : 'An unknown error occurred'
+            });
+        }
+    }
 };

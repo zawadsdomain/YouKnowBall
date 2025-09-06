@@ -8,14 +8,19 @@ router.get('/', async (req: Request, res: Response) => {
     await playerController.getAllPlayers(req, res);
 });
 
-// GET /api/players/:playerId -- Get a single player
-router.get('/:playerId', async (req: Request, res: Response) => {
+// GET /api/players/:id -- Get a single player
+router.get('/:id', async (req: Request, res: Response) => {
     await playerController.getPlayerById(req, res);
 });
 
-// POST /api/players/ -- Create a new player
-router.post('/', async (req: Request, res: Response) => {
-    await playerController.createPlayer(req, res);
+// POST /api/players/seed -- Seed players (development only)
+router.post('/seed', async (req: Request, res: Response) => {
+    await playerController.seedPlayers(req, res);
+});
+
+// DELETE /api/players/clear -- Clear all players (development only)
+router.delete('/clear', async (req: Request, res: Response) => {
+    await playerController.clearPlayers(req, res);
 });
 
 export default router; 
