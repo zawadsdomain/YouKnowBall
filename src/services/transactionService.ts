@@ -1,7 +1,8 @@
 import { transactionsRef, holdingsRef, usersRef } from '../config/firestore';
 import { db } from '../utils/firestore';
-import { Timestamp } from 'firebase-admin/firestore';
-
+import { FieldValue, Timestamp } from 'firebase-admin/firestore';
+// this handles all the logic for when a user buys or sells a player -- post validation
+// called by the transactionController.ts
 export const transactionService = {
     async processTransaction(userId: string, playerId: string, transactionType: 'buy' | 'sell', quantity: number, price: number) {
         // Start a batch write -- all or nothing. 
@@ -50,21 +51,39 @@ export const transactionService = {
                 throw new Error('Holding data not found');
             }
 
-            if (transactionType === 'sell' && currentHolding.quantity < quantity) {
+            const currentQuantity = currentHolding.quantity;
+
+            if (transactionType === 'sell' && currentQuantity < quantity) {
                 throw new Error('Insufficient shares to sell');
             }
 
-            const newQuantity = transactionType === 'buy' 
-                ? currentHolding.quantity + quantity 
-                : currentHolding.quantity - quantity;
+            const isBuy = transactionType === 'buy';
+            const newQuantity = isBuy
+                ? currentQuantity + quantity
+                : currentQuantity - quantity;
 
-            const newAvgPrice = (currentHolding.avgPrice * currentHolding.quantity + price * quantity) / newQuantity;
+            if (newQuantity < 0) {
+                throw new Error('Holdings cannot be negative');
+            }
 
-            batch.update(holdingRef, {
-                quantity: newQuantity,
-                avgPrice: newAvgPrice,
-                updatedAt: Timestamp.now()
-            });
+            if (newQuantity === 0) {
+                batch.delete(holdingRef);
+            } else {
+                const updatePayload: Record<string, unknown> = {
+                    quantity: newQuantity,
+                    updatedAt: Timestamp.now()
+                };
+
+                if (isBuy) {
+                    const totalCost = currentHolding.avgPrice * currentQuantity + price * quantity;
+                    updatePayload.avgPrice = totalCost / newQuantity;
+                    updatePayload.mostRecentPurchase = Timestamp.now();
+                } else {
+                    updatePayload.avgPrice = currentHolding.avgPrice;
+                }
+
+                batch.update(holdingRef, updatePayload as Record<string, FieldValue>);
+            }
         } else {
             if (transactionType === 'sell') {
                 throw new Error('Cannot sell shares you do not own');

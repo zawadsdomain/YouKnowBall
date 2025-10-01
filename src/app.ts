@@ -33,6 +33,10 @@ app.get('/api/', (req: Request, res: Response) => {
   res.json({ message: 'Welcome to You Know Ball API 🏀' });
 });
 
+app.get('/', (req: Request, res: Response) => {
+  res.json({message: "You are connected to the backend"});
+});
+
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);
