@@ -14,9 +14,37 @@ interface Holding {
 export const holdingsController = {
 
     getAllHoldings: async (req: Request, res: Response) => {
+        try {
+            // Fetch all holdings (no user filter)
+            const holdings = await holdingsRef.get();
+            const holdingsData = holdings.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data()
+            }))
 
+            res.json({
+                success: true,
+                data: holdingsData
+            })
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: 'Error fetching all holdings',
+                error: error instanceof Error ? error.message : 'An unknown error occurred'
+            })
+        }
+    },
+
+    getUserHoldings: async (req: Request, res: Response) => {
         try {
             const { userId } = req.params;
+
+            if (!userId) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'User ID is required'
+                });
+            }
 
             // Fetch all holdings for the specified user
             const holdings = await holdingsRef.where('userId', '==', userId).get();
@@ -32,7 +60,7 @@ export const holdingsController = {
         } catch (error) {
             res.status(500).json({
                 success: false,
-                message: 'Error fetching this users holdings',
+                message: 'Error fetching user holdings',
                 error: error instanceof Error ? error.message : 'An unknown error occurred'
             })
         }

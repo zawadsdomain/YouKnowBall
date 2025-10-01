@@ -10,7 +10,7 @@ router.get('/', async (req: Request, res: Response) => {
 
 // GET /api/holdings/:userId -- Get holdings for a specific user
 router.get('/:userId', async (req: Request, res: Response) => {
-    await holdingsController.getAllHoldings(req, res);
+    await holdingsController.getUserHoldings(req, res);
 });
 
 export default router;
