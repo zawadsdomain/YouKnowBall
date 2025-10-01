@@ -9,11 +9,12 @@ export const priceUpdateController = {
             const { playerId } = req.params;
             const performanceData: PlayerPerformance = req.body;
 
-            // Validate required fields
-            if (!performanceData.points || !performanceData.gamesPlayed) {
+            // Validate required fields (allow zero values)
+            if (performanceData.points === undefined || performanceData.points === null || 
+                performanceData.gamesPlayed === undefined || performanceData.gamesPlayed === null) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Performance data must include points and gamesPlayed'
+                    message: 'Performance data must include points and gamesPlayed (zero values are allowed)'
                 });
             }
 
