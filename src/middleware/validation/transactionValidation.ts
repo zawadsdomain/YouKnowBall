@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { usersRef, playersRef } from '../../config/firestore';
+import { usersRef, playersRef, holdingsRef } from '../../config/firestore';
 
 export const validateTransaction = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -52,6 +52,50 @@ export const validateTransaction = async (req: Request, res: Response, next: Nex
                 message: 'Player not found'
             });
             return; // output the error then return. 
+        }
+
+        // Validate balance and holdings based on transaction type
+        const userData = userDoc.data();
+        const transactionCost = price * quantity;
+
+        if (transactionType === 'buy') {
+            // Check if user has sufficient balance
+            if (userData?.balance < transactionCost) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Insufficient funds',
+                    balance: userData?.balance || 0,
+                    required: transactionCost,
+                    shortfall: transactionCost - (userData?.balance || 0)
+                });
+                return;
+            }
+        } else if (transactionType === 'sell') {
+            // Check if user has sufficient shares to sell
+            const holdingId = `${userId}_${playerId}`;
+            const holdingDoc = await holdingsRef.doc(holdingId).get();
+            
+            if (!holdingDoc.exists) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Cannot sell shares you do not own',
+                    holdings: 0,
+                    requested: quantity
+                });
+                return;
+            }
+
+            const holdingData = holdingDoc.data();
+            if (holdingData?.quantity < quantity) {
+                res.status(400).json({
+                    success: false,
+                    message: 'Insufficient shares to sell',
+                    holdings: holdingData?.quantity || 0,
+                    requested: quantity,
+                    shortfall: quantity - (holdingData?.quantity || 0)
+                });
+                return;
+            }
         }
 
         // If all validations pass, proceed to the next middleware/controller

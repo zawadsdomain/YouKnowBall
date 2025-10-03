@@ -87,7 +87,7 @@ export const userController = {
             await usersRef.doc(userRecord.uid).set({
                 username,
                 email,
-                balance: 10000,
+                balance: 10000, // starting balance
                 createdAt: new Date(),
                 updatedAt: new Date()
             });
