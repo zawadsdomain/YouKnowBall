@@ -15,13 +15,22 @@ interface Transaction {
 }
 
 export const transactionController = {
-    // Get all transactions
-    getAllTransactions: async (req: Request, res: Response) => {
+    // Get all transactions for the authenticated user
+    getAllTransactions: async (req: Request, res: Response): Promise<void> => {
         try {
+            // Use authenticated user's ID from middleware
+            const userId = req.user?.uid;
 
+            if (!userId) {
+                res.status(401).json({
+                    success: false,
+                    message: 'User not authenticated'
+                });
+                return;
+            }
 
-            // Get all transactions (not filtered by user)
-            const transactions = await transactionsRef.get();
+            // Get all transactions for the authenticated user
+            const transactions = await transactionsRef.where('userId', '==', userId).get();
             const transactionsData = transactions.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data()
@@ -41,9 +50,19 @@ export const transactionController = {
     },
 
     // POST a new transaction
-    appendTransaction: async (req: Request, res: Response) => {
+    appendTransaction: async (req: Request, res: Response): Promise<void> => {
         try {
-            const { userId, playerId, transactionType, quantity, price } = req.body;
+            // Use authenticated user's ID from middleware
+            const userId = req.user?.uid;
+            const { playerId, transactionType, quantity, price } = req.body;
+
+            if (!userId) {
+                res.status(401).json({
+                    success: false,
+                    message: 'User not authenticated'
+                });
+                return;
+            }
 
             const result = await transactionService.processTransaction(
                 userId,

@@ -18,29 +18,32 @@ declare global {
     }
 }
 
-export const authenticateUser = async (req: Request, res: Response, next: NextFunction) => {
+export const authenticateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         // Get the token from the Authorization header
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({
+            res.status(401).json({
                 success: false,
                 message: 'Unauthorized: No token provided'
             });
+            return;
         }
 
         const token = authHeader.split('Bearer ')[1];
         console.log('Token received:', token);
 
-        // Decode the token to get the user ID
-        const decodedToken = jwt.decode(token) as { uid: string };
+        // Verify the JWT token
+        const jwtSecret = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+        const decodedToken = jwt.verify(token, jwtSecret) as { uid: string; email: string };
         console.log('Decoded token:', decodedToken);
         
         if (!decodedToken || !decodedToken.uid) {
-            return res.status(401).json({
+            res.status(401).json({
                 success: false,
                 message: 'Unauthorized: Invalid token format'
             });
+            return;
         }
 
         // Verify the user exists in Firebase
@@ -58,7 +61,7 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
 
     } catch (error) {
         console.error('Auth error: ', error);
-        return res.status(401).json({
+        res.status(401).json({
             success: false,
             message: 'Unauthorized: Invalid token'
         });

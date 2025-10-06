@@ -35,18 +35,20 @@ export const holdingsController = {
         }
     },
 
-    getUserHoldings: async (req: Request, res: Response) => {
+    getUserHoldings: async (req: Request, res: Response): Promise<void> => {
         try {
-            const { userId } = req.params;
+            // Use authenticated user's ID from middleware
+            const userId = req.user?.uid;
 
             if (!userId) {
-                return res.status(400).json({
+                res.status(401).json({
                     success: false,
-                    message: 'User ID is required'
+                    message: 'User not authenticated'
                 });
+                return;
             }
 
-            // Fetch all holdings for the specified user
+            // Fetch all holdings for the authenticated user
             const holdings = await holdingsRef.where('userId', '==', userId).get();
             const holdingsData = holdings.docs.map((doc) => ({
                 id: doc.id,

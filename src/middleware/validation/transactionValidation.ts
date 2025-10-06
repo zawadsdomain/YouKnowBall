@@ -3,14 +3,24 @@ import { usersRef, playersRef, holdingsRef } from '../../config/firestore';
 
 export const validateTransaction = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const { userId, playerId, transactionType, quantity, price } = req.body;
+        // Get userId from authenticated user (set by auth middleware)
+        const userId = req.user?.uid;
+        const { playerId, transactionType, quantity, price } = req.body;
+
+        if (!userId) {
+            res.status(401).json({
+                success: false,
+                message: 'User not authenticated'
+            });
+            return;
+        }
 
         // Check if all required fields are present
-        if (!userId || !playerId || !transactionType || !quantity || !price) {
+        if (!playerId || !transactionType || !quantity || !price) {
             res.status(400).json({
                 success: false,
                 message: 'Missing required fields',
-                required: ['userId', 'playerId', 'transactionType', 'quantity', 'price']
+                required: ['playerId', 'transactionType', 'quantity', 'price']
             });
             return; // output the error then return. 
         }

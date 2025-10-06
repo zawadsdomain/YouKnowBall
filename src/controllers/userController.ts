@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { usersRef } from '../config/firestore';
 import { auth } from '../utils/firestore';
 import { Auth } from 'firebase-admin/auth';
+import jwt from 'jsonwebtoken';
 
 interface User {
     id: string;  // Changed to string since Firestore uses string IDs
@@ -72,7 +73,7 @@ export const userController = {
         }
     }, 
 
-    createUser: async (req: Request, res: Response) => {
+    createUser: async (req: Request, res: Response): Promise<void> => {
         try {
             const { email, password, username } = req.body;
 
@@ -92,10 +93,22 @@ export const userController = {
                 updatedAt: new Date()
             });
 
+            // Create a JWT token for immediate login
+            const jwtSecret = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+            const token = jwt.sign(
+                { 
+                    uid: userRecord.uid,
+                    email: userRecord.email 
+                },
+                jwtSecret,
+                { expiresIn: '24h' }
+            );
+
             res.status(201).json({
                 success: true,
                 message: 'User created successfully',
                 data: {
+                    token,
                     uid: userRecord.uid,
                     email: userRecord.email,
                     username: userRecord.displayName
@@ -111,15 +124,23 @@ export const userController = {
         }
     },
 
-    loginUser: async (req: Request, res: Response) => {
+    loginUser: async (req: Request, res: Response): Promise<void> => {
         try {
             const { email, password } = req.body;
             
             // Get user by email
             const userRecord = await auth.getUserByEmail(email);
             
-            // Create a custom token
-            const token = await auth.createCustomToken(userRecord.uid);
+            // Create a JWT token for testing (in production, you'd verify password)
+            const jwtSecret = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+            const token = jwt.sign(
+                { 
+                    uid: userRecord.uid,
+                    email: userRecord.email 
+                },
+                jwtSecret,
+                { expiresIn: '24h' }
+            );
 
             res.json({
                 success: true,
