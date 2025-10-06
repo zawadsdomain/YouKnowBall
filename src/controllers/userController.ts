@@ -3,6 +3,7 @@ import { usersRef } from '../config/firestore';
 import { auth } from '../utils/firestore';
 import { Auth } from 'firebase-admin/auth';
 import jwt from 'jsonwebtoken';
+import { logger } from '../utils/logger';
 
 interface User {
     id: string;  // Changed to string since Firestore uses string IDs
@@ -151,6 +152,7 @@ export const userController = {
                 }
             });
         } catch (error) {
+            logger.error('Error during login', error as Error, { email: req.body?.email }, req);
             res.status(401).json({
                 success: false,
                 message: 'Invalid credentials',

@@ -9,4 +9,9 @@ router.get('/', authenticateUser as RequestHandler, async (req: Request, res: Re
     await holdingsController.getUserHoldings(req, res);
 });
 
+// GET /api/holdings/valuation -- Get current user's portfolio valuation (protected - requires auth)
+router.get('/valuation', authenticateUser as RequestHandler, async (req: Request, res: Response) => {
+    await holdingsController.getPortfolioValuation(req, res);
+});
+
 export default router;

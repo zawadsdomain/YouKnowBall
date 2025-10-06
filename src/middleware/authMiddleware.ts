@@ -2,6 +2,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { auth } from '../utils/firestore';
 import jwt from 'jsonwebtoken';
+import { logger } from '../utils/logger';
 
 declare global {
     namespace Express {
@@ -31,14 +32,13 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
         }
 
         const token = authHeader.split('Bearer ')[1];
-        console.log('Token received:', token);
 
         // Verify the JWT token
         const jwtSecret = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
         const decodedToken = jwt.verify(token, jwtSecret) as { uid: string; email: string };
-        console.log('Decoded token:', decodedToken);
         
         if (!decodedToken || !decodedToken.uid) {
+            logger.warn('Invalid token format', { requestId: req.requestId }, req);
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized: Invalid token format'
@@ -48,19 +48,22 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
 
         // Verify the user exists in Firebase
         const userRecord = await auth.getUser(decodedToken.uid);
-        console.log('User record:', userRecord);
 
         // Add the user to the request object
         req.user = {
             uid: userRecord.uid,
             email: userRecord.email,
         };
-        console.log('Request user set to:', req.user);
+
+        logger.debug('User authenticated successfully', { 
+            userId: userRecord.uid, 
+            email: userRecord.email 
+        }, req);
 
         next();
 
     } catch (error) {
-        console.error('Auth error: ', error);
+        logger.error('Authentication failed', error as Error, { requestId: req.requestId }, req);
         res.status(401).json({
             success: false,
             message: 'Unauthorized: Invalid token'
