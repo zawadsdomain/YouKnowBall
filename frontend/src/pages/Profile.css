@@ -1,0 +1,261 @@
+.profile {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.profile.loading,
+.profile.error {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.profile.error {
+  color: #c33;
+  background-color: #fee;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: white;
+  border-bottom: 1px solid #ddd;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #ffd700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  flex-shrink: 0;
+}
+
+.profile-info h1 {
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+}
+
+.profile-info .email {
+  color: #ddd;
+  font-size: 0.95rem;
+}
+
+.profile-info .join-date {
+  color: #bbb;
+  font-size: 0.9rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.tab {
+  flex: 1;
+  padding: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+  transition: all 0.3s;
+  text-align: center;
+}
+
+.tab:hover {
+  background-color: #eee;
+}
+
+.tab.active {
+  background-color: white;
+  color: #ffd700;
+  border-bottom: 3px solid #ffd700;
+}
+
+.overview-tab,
+.portfolio-tab {
+  padding: 2rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #f5f5f5 0%, #fff 100%);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #ffd700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.stat-card h3 {
+  font-size: 0.9rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.stat-card.positive .stat-value {
+  color: #0a7d0a;
+}
+
+.stat-card.negative .stat-value {
+  color: #d32f2f;
+}
+
+.stat-value span {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.stat-value .gain {
+  color: #0a7d0a;
+}
+
+.stat-value .loss {
+  color: #d32f2f;
+}
+
+.total-worth {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  color: #1a1a1a;
+}
+
+.total-worth h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.net-worth {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.holdings-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.holdings-table thead {
+  background-color: #f5f5f5;
+}
+
+.holdings-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+}
+
+.holdings-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.holdings-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.holdings-table .player-name {
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.holdings-table .gain-loss {
+  font-weight: 500;
+}
+
+.holdings-table tr.positive .gain-loss {
+  color: #0a7d0a;
+}
+
+.holdings-table tr.negative .gain-loss {
+  color: #d32f2f;
+}
+
+.holdings-table span {
+  display: block;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.holdings-table .gain {
+  color: #0a7d0a;
+}
+
+.holdings-table .loss {
+  color: #d32f2f;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #666;
+}
+
+.empty-state p {
+  margin: 0.5rem 0;
+}
+
+.empty-state p:first-child {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-info h1 {
+    font-size: 1.5rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .holdings-table {
+    font-size: 0.9rem;
+  }
+
+  .holdings-table th,
+  .holdings-table td {
+    padding: 0.75rem;
+  }
+}

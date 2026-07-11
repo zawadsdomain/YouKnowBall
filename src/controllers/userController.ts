@@ -76,6 +76,14 @@ export const userController = {
         try {
             const { email, password, username } = req.body;
 
+            // Ensure Firebase Auth is initialized
+            if (!auth) {
+                return res.status(500).json({
+                    success: false,
+                    message: 'Firebase Auth not initialized'
+                });
+            }
+
             // Create user in Firebase Auth
             const userRecord = await auth.createUser({
                 email,
@@ -114,10 +122,17 @@ export const userController = {
     loginUser: async (req: Request, res: Response) => {
         try {
             const { email, password } = req.body;
-            
+            // Ensure Firebase Auth is initialized
+            if (!auth) {
+                return res.status(500).json({
+                    success: false,
+                    message: 'Firebase Auth not initialized'
+                });
+            }
+
             // Get user by email
             const userRecord = await auth.getUserByEmail(email);
-            
+
             // Create a custom token
             const token = await auth.createCustomToken(userRecord.uid);
 

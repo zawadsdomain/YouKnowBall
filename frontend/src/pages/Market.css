@@ -1,0 +1,321 @@
+.market {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.market.loading,
+.market.error {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.market.error {
+  color: #c33;
+  background-color: #fee;
+}
+
+.market-header {
+  padding: 2rem;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: white;
+}
+
+.market-header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.market-header .subtitle {
+  color: #ddd;
+  font-size: 1rem;
+}
+
+.market-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.market-stats .stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.market-stats .label {
+  font-size: 0.85rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.market-stats .value {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.market-stats .change {
+  display: block;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+.market-stats .change.positive {
+  color: #0a7d0a;
+}
+
+.market-stats .change.negative {
+  color: #d32f2f;
+}
+
+.market-stats .volume {
+  display: block;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+  color: #666;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #ddd;
+  align-items: center;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 200px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #ffd700;
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filters select {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.filters select:focus {
+  outline: none;
+  border-color: #ffd700;
+}
+
+.players-container {
+  overflow-x: auto;
+  padding: 0 2rem;
+  padding-bottom: 1rem;
+}
+
+.players-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.players-table thead {
+  background-color: #f5f5f5;
+}
+
+.players-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.players-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+  white-space: nowrap;
+}
+
+.players-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.players-table .player-name {
+  font-weight: 600;
+  color: #1a1a1a;
+  white-space: normal;
+}
+
+.players-table .price {
+  font-weight: 600;
+  color: #ffd700;
+}
+
+.players-table .change {
+  font-weight: 500;
+}
+
+.players-table .change.positive {
+  color: #0a7d0a;
+}
+
+.players-table .change.negative {
+  color: #d32f2f;
+}
+
+.players-table .change-value {
+  font-size: 0.95rem;
+}
+
+.players-table .range {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.players-table .volume {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.players-table .rating {
+  text-align: center;
+}
+
+.rating-stars {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+}
+
+.rating-value {
+  margin-left: 0.5rem;
+  color: #666;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.btn-trade {
+  background-color: #ffd700;
+  color: black;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.btn-trade:hover {
+  background-color: #ffed4e;
+  transform: scale(1.05);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #666;
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+}
+
+.market-info {
+  padding: 1rem 2rem;
+  background-color: #f5f5f5;
+  border-top: 1px solid #ddd;
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 1024px) {
+  .players-table {
+    font-size: 0.9rem;
+  }
+
+  .players-table th,
+  .players-table td {
+    padding: 0.75rem;
+  }
+
+  .btn-trade {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .market-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .controls {
+    flex-direction: column;
+  }
+
+  .search-box {
+    min-width: unset;
+  }
+
+  .filters {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .filters select {
+    width: 100%;
+  }
+
+  .players-container {
+    padding: 0;
+    overflow-x: auto;
+  }
+
+  .players-table {
+    font-size: 0.8rem;
+  }
+
+  .players-table th,
+  .players-table td {
+    padding: 0.5rem;
+  }
+
+  .rating-stars {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
