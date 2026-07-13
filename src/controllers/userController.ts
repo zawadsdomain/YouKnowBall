@@ -47,7 +47,7 @@ export const userController = {
         try {
             const { userId } = req.params;
 
-            // Get user document
+            // Get user document by UID from Firestore.
             const userDoc = await usersRef.doc(userId).get();
             if (!userDoc.exists) {
                 return res.status(404).json({
@@ -70,7 +70,42 @@ export const userController = {
                 error: error instanceof Error ? error.message : 'An unknown error occurred'
             });
         }
-    }, 
+    },
+
+    // GET /api/users/profile
+    // Returns the currently authenticated user's profile document.
+    getProfile: async (req: Request, res: Response) => {
+        try {
+            // The authentication middleware should attach the current user ID to req.user.
+            const userId = req.user?.uid;
+            if (!userId) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Unauthorized: no authenticated user'
+                });
+            }
+
+            const userDoc = await usersRef.doc(userId).get();
+            if (!userDoc.exists) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'User profile not found'
+                });
+            }
+
+            const userData = userDoc.data();
+            res.json({
+                success: true,
+                data: userData
+            });
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: 'Error fetching profile',
+                error: error instanceof Error ? error.message : 'An unknown error occurred'
+            });
+        }
+    },
 
     createUser: async (req: Request, res: Response) => {
         try {
@@ -84,14 +119,14 @@ export const userController = {
                 });
             }
 
-            // Create user in Firebase Auth
+            // Create user in Firebase Auth.
             const userRecord = await auth.createUser({
                 email,
                 password,
                 displayName: username
             });
 
-            // Create user document in Firestore
+            // Create a matching user document in Firestore.
             await usersRef.doc(userRecord.uid).set({
                 username,
                 email,
@@ -100,13 +135,17 @@ export const userController = {
                 updatedAt: new Date()
             });
 
+            // Generate a custom Firebase token for frontend authentication.
+            const token = await auth.createCustomToken(userRecord.uid);
+
             res.status(201).json({
                 success: true,
                 message: 'User created successfully',
                 data: {
                     uid: userRecord.uid,
                     email: userRecord.email,
-                    username: userRecord.displayName
+                    username: userRecord.displayName,
+                    token
                 }
             });
 

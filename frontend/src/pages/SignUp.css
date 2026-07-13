@@ -1,0 +1,58 @@
+.signup-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1rem;
+}
+
+.signup-card {
+  width: 100%;
+  max-width: 480px;
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+}
+
+.signup-card h1 {
+  margin-bottom: 0.5rem;
+}
+
+.signup-card .greeting {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.signup-form label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.signup-form input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.signup-form .actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.error {
+  background: #fee;
+  color: #c33;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .signup-card { padding: 1rem; }
+}

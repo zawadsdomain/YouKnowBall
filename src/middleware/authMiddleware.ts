@@ -23,10 +23,11 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
         // Get the token from the Authorization header
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({
+            res.status(401).json({
                 success: false,
                 message: 'Unauthorized: No token provided'
             });
+            return;
         }
 
         const token = authHeader.split('Bearer ')[1];
@@ -37,10 +38,20 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
         console.log('Decoded token:', decodedToken);
         
         if (!decodedToken || !decodedToken.uid) {
-            return res.status(401).json({
+            res.status(401).json({
                 success: false,
                 message: 'Unauthorized: Invalid token format'
             });
+            return;
+        }
+
+        // Ensure Firebase Auth is initialized before verifying the token.
+        if (!auth) {
+            res.status(500).json({
+                success: false,
+                message: 'Firebase Auth is not initialized'
+            });
+            return;
         }
 
         // Verify the user exists in Firebase
@@ -58,9 +69,10 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
 
     } catch (error) {
         console.error('Auth error: ', error);
-        return res.status(401).json({
+        res.status(401).json({
             success: false,
             message: 'Unauthorized: Invalid token'
         });
+        return;
     }
 };

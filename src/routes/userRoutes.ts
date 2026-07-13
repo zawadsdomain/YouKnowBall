@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { userController } from '../controllers/userController';
+import { authenticateUser } from '../middleware/authMiddleware';
 
 const router: Router = Router();
 
@@ -8,7 +9,12 @@ router.get('/', async (req: Request, res: Response) => {
     await userController.getAllUsers(req, res);
 });
 
-// GET /api/users/:userId --- get a single user
+// GET /api/users/profile -- get the currently authenticated user
+router.get('/profile', authenticateUser, async (req: Request, res: Response) => {
+    await userController.getProfile(req, res);
+});
+
+// GET /api/users/:userId --- get a single user by UID
 router.get('/:userId', async (req: Request, res: Response) => {
     await userController.getUserById(req, res);
 });

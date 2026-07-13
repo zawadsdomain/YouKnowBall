@@ -38,14 +38,14 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="cta-section">
+      {/* <div className="cta-section">
         <h2>Ready to Get Started?</h2>
         <p>Create an account or login to begin trading NBA player stocks.</p>
         <div className="cta-buttons">
           <button className="btn-primary">Sign Up</button>
           <button className="btn-secondary">Login</button>
         </div>
-      </div>
+      </div> */}
 
       <div className="how-it-works">
         <h2>How It Works</h2>

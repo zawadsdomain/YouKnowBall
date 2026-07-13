@@ -15,8 +15,10 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        // Call the protected backend profile endpoint.
+        // The backend returns { success, data: userData }, so read response.data.data.
         const response = await apiClient.get('/users/profile');
-        setUser(response.data);
+        setUser(response.data.data);
       } catch (err) {
         setError('Failed to load user data');
         console.error(err);
