@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
 import './SignUp.css';
 
@@ -14,9 +14,9 @@ export default function SignUp() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // If the user already has an account flag, redirect them away from signup.
-    const hasAccount = localStorage.getItem('hasAccount');
-    if (hasAccount) {
+    // If the user already has a valid auth token, redirect them to the dashboard.
+    const token = localStorage.getItem('authToken');
+    if (token) {
       navigate('/dashboard');
     }
   }, [navigate]);
@@ -30,9 +30,12 @@ export default function SignUp() {
       // Send signup request to backend and receive auth data.
       const resp = await apiClient.post('/users/signup', { username, email, password });
 
-      // Save backend auth token if provided.
-      if (resp.data?.token) {
-        localStorage.setItem('authToken', resp.data.token);
+      // The backend returns { success, data: { token, ... } } from /users/signup.
+      const token = resp.data?.data?.token || resp.data?.token;
+      if (token) {
+        localStorage.setItem('authToken', token);
+      } else {
+        throw new Error('Missing auth token from signup response');
       }
 
       // Mark the user as having an account so the route guard stops redirecting.
@@ -79,6 +82,10 @@ export default function SignUp() {
             </button>
           </div>
         </form>
+
+        <p className="alt-action">
+          Already have an account? <Link to="/login">Log in.</Link>
+        </p>
       </div>
     </div>
   );

@@ -31,15 +31,48 @@ export default function Profile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const [userRes, holdingsRes] = await Promise.all([
-          apiClient.get('/users/profile'),
-          apiClient.get('/holdings'),
-        ]);
-        setUser(userRes.data);
-        setHoldings(holdingsRes.data);
-      } catch (err) {
-        setError('Failed to load profile data');
+        // Fetch the authenticated user's profile first. If that succeeds,
+        // request holdings for that specific user by ID.
+        const userRes = await apiClient.get('/users/profile');
+        const userData = userRes.data?.data ?? userRes.data;
+
+        // Normalize and provide safe defaults for numeric fields so rendering
+        // doesn't crash if the backend omits fields.
+        const normalizedUser = {
+          id: userData?.id ?? userData?.uid ?? userData?.userId ?? null,
+          username: userData?.username ?? userData?.displayName ?? 'User',
+          email: userData?.email ?? '',
+          balance: Number(userData?.balance ?? 0),
+          totalInvested: Number(userData?.totalInvested ?? 0),
+          portfolioValue: Number(userData?.portfolioValue ?? 0),
+          joinDate: userData?.joinDate ?? userData?.createdAt ?? null,
+        } as UserProfile;
+
+        setUser(normalizedUser);
+
+        // If the backend exposes holdings per-user at /holdings/:userId, use it.
+        const userId = normalizedUser.id;
+        if (userId) {
+          const holdingsRes = await apiClient.get(`/holdings/${userId}`);
+          const rawHoldings = holdingsRes.data?.data ?? holdingsRes.data ?? [];
+          // Normalize holdings to ensure numeric fields are numbers.
+          const normalizedHoldings: Holding[] = rawHoldings.map((h: any) => ({
+            playerId: h.playerId ?? h.id ?? 'unknown',
+            playerName: h.playerName ?? h.name ?? 'Unknown Player',
+            shares: Number(h.shares ?? h.quantity ?? 0),
+            purchasePrice: Number(h.purchasePrice ?? h.avgPrice ?? 0),
+            currentPrice: Number(h.currentPrice ?? h.current ?? 0),
+            totalValue: Number(h.totalValue ?? (h.shares ?? 0) * (h.currentPrice ?? h.current ?? 0)),
+          }));
+
+          setHoldings(normalizedHoldings);
+        } else {
+          // No user id available — set empty holdings but continue.
+          setHoldings([]);
+        }
+      } catch (err: any) {
         console.error(err);
+        setError('Failed to load profile data');
       } finally {
         setLoading(false);
       }
@@ -52,9 +85,9 @@ export default function Profile() {
   if (error) return <div className="profile error">{error}</div>;
   if (!user) return <div className="profile error">User data not found</div>;
 
-  const totalPortfolioValue = holdings.reduce((sum, h) => sum + h.totalValue, 0);
-  const gainLoss = totalPortfolioValue - user.totalInvested;
-  const gainLossPercent = user.totalInvested > 0 ? (gainLoss / user.totalInvested) * 100 : 0;
+  const totalPortfolioValue = holdings.reduce((sum, h) => sum + (h.totalValue ?? 0), 0);
+  const gainLoss = totalPortfolioValue - (user.totalInvested ?? 0);
+  const gainLossPercent = (user.totalInvested ?? 0) > 0 ? (gainLoss / (user.totalInvested ?? 0)) * 100 : 0;
 
   return (
     <div className="profile">
@@ -85,15 +118,16 @@ export default function Profile() {
       {activeTab === 'overview' && (
         <div className="overview-tab">
           <div className="stats-grid">
-            <div className="stat-card">
-              <h3>Cash Available</h3>
-              <p className="stat-value">${user.balance.toFixed(2)}</p>
-            </div>
 
-            <div className="stat-card">
-              <h3>Total Invested</h3>
-              <p className="stat-value">${user.totalInvested.toFixed(2)}</p>
-            </div>
+              <div className="stat-card">
+                <h3>Cash Available</h3>
+                <p className="stat-value">${(user.balance ?? 0).toFixed(2)}</p>
+              </div>
+
+              <div className="stat-card">
+                <h3>Total Invested</h3>
+                <p className="stat-value">${(user.totalInvested ?? 0).toFixed(2)}</p>
+              </div>
 
             <div className="stat-card">
               <h3>Portfolio Value</h3>
@@ -113,7 +147,7 @@ export default function Profile() {
 
           <div className="total-worth">
             <h2>Total Net Worth</h2>
-            <p className="net-worth">${(user.balance + totalPortfolioValue).toFixed(2)}</p>
+            <p className="net-worth">${((user.balance ?? 0) + totalPortfolioValue).toFixed(2)}</p>
           </div>
         </div>
       )}
@@ -139,16 +173,16 @@ export default function Profile() {
               </thead>
               <tbody>
                 {holdings.map((holding) => {
-                  const gain = holding.totalValue - holding.purchasePrice * holding.shares;
-                  const gainPercent = ((holding.currentPrice - holding.purchasePrice) / holding.purchasePrice) * 100;
+                  const gain = (holding.totalValue ?? 0) - (holding.purchasePrice ?? 0) * (holding.shares ?? 0);
+                  const gainPercent = (holding.purchasePrice ?? 0) > 0 ? (((holding.currentPrice ?? 0) - (holding.purchasePrice ?? 0)) / (holding.purchasePrice ?? 0)) * 100 : 0;
 
                   return (
                     <tr key={holding.playerId} className={gain >= 0 ? 'positive' : 'negative'}>
                       <td className="player-name">{holding.playerName}</td>
                       <td>{holding.shares}</td>
-                      <td>${holding.purchasePrice.toFixed(2)}</td>
-                      <td>${holding.currentPrice.toFixed(2)}</td>
-                      <td>${holding.totalValue.toFixed(2)}</td>
+                      <td>${(holding.purchasePrice ?? 0).toFixed(2)}</td>
+                      <td>${(holding.currentPrice ?? 0).toFixed(2)}</td>
+                      <td>${(holding.totalValue ?? 0).toFixed(2)}</td>
                       <td className="gain-loss">
                         ${Math.abs(gain).toFixed(2)}
                         <span className={gain >= 0 ? 'gain' : 'loss'}>

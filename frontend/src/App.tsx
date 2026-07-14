@@ -5,11 +5,13 @@ import Players from './pages/Players';
 import Profile from './pages/Profile';
 import Market from './pages/Market';
 import SignUp from './pages/SignUp';
+import Login from './pages/Login';
+import Settings from './pages/Settings';
 import './App.css';
 
-// Helper to determine whether the user has already created or logged into an account.
-// This is stored in localStorage as a simple flag for this prototype flow.
-const isAuthenticated = () => Boolean(localStorage.getItem('hasAccount'));
+// Helper to determine whether the user is currently authenticated.
+// We rely on the auth token stored in localStorage, not a stale account flag.
+const isAuthenticated = () => Boolean(localStorage.getItem('authToken'));
 
 function App() {
   // If the user does not have an account, do not show the normal app navigation.
@@ -26,6 +28,7 @@ function App() {
             <li><a href="/market">Market</a></li>
             <li><a href="/dashboard">Dashboard</a></li>
             <li><a href="/profile">Profile</a></li>
+                <li><a href="/settings">Settings</a></li>
           </ul>
         </nav>
       )}
@@ -53,11 +56,19 @@ function App() {
             path="/players"
             element={userLoggedIn ? <Players /> : <Navigate to="/signup" replace />}
           />
+          <Route
+            path="/settings"
+            element={userLoggedIn ? <Settings /> : <Navigate to="/signup" replace />}
+          />
 
           {/* The signup page is the only page unauthenticated users can access. */}
           <Route
             path="/signup"
             element={userLoggedIn ? <Navigate to="/dashboard" replace /> : <SignUp />}
+          />
+          <Route
+            path="/login"
+            element={userLoggedIn ? <Navigate to="/dashboard" replace /> : <Login />}
           />
 
           {/* Catch-all route redirects to signup if unauthenticated, otherwise home. */}

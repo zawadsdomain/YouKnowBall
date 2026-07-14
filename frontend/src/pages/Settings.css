@@ -1,0 +1,20 @@
+.settings-page{
+  justify-content:center;
+  padding:2rem;
+  display:flex;
+}
+.settings-card{
+  background:#fff;
+  border-radius:20px;
+  width:100%;
+  max-width:520px;
+  padding:2rem;
+  box-shadow:0 14px 40px rgba(0,0,0,0.08);
+}
+.settings-card h1{margin-bottom:.5rem}
+.settings-card p{color:#555;margin-bottom:1.5rem}
+.settings-actions{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-secondary,.btn-danger{cursor:pointer;border:none;border-radius:10px;padding:.95rem 1.25rem;font-weight:600}
+.btn-secondary{color:#111827;background:#f3f4f6}
+.btn-danger{color:#fff;background:#ef4444}
+.error{color:#b91c1c;margin-bottom:1rem}
