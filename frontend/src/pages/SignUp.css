@@ -1,17 +1,28 @@
 .signup-page {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   padding: 3rem 1rem;
+}
+
+.signup-content {
+  width: min(1200px, 100%);
+  display: grid;
+  grid-template-columns: minmax(320px, 480px) 1fr;
+  gap: 2rem;
+  align-items: start;
 }
 
 .signup-card {
   width: 100%;
-  max-width: 480px;
   background: white;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+}
+
+.signup-spotlight {
+  width: 100%;
 }
 
 .signup-card h1 {
@@ -51,6 +62,12 @@
   padding: 0.6rem 0.8rem;
   border-radius: 6px;
   margin-top: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .signup-content {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {

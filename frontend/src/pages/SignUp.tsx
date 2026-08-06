@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
+import PlayerSpotlightGrid from '../components/PlayerSpotlightGrid';
 import './SignUp.css';
 
 export default function SignUp() {
@@ -53,12 +54,13 @@ export default function SignUp() {
 
   return (
     <div className="signup-page">
-      <div className="signup-card">
-        <h1>Welcome — Create your account</h1>
-        <p className="greeting">Join You Know Ball and get $10,000 in virtual cash to start trading.</p>
+      <div className="signup-content">
+        <div className="signup-card">
+          <h1>Welcome — Create your account</h1>
+          <p className="greeting">Join You Know Ball and get $10,000 in virtual cash to start trading.</p>
 
-        {/* Signup form for new users. */}
-        <form onSubmit={handleSubmit} className="signup-form">
+          {/* Signup form for new users. */}
+          <form onSubmit={handleSubmit} className="signup-form">
           <label>
             Username
             <input value={username} onChange={(e) => setUsername(e.target.value)} required />
@@ -76,16 +78,21 @@ export default function SignUp() {
 
           {error && <div className="error">{error}</div>}
 
-          <div className="actions">
-            <button type="submit" className="btn-primary" disabled={loading}>
-              {loading ? 'Creating account...' : 'Create Account'}
-            </button>
-          </div>
-        </form>
+            <div className="actions">
+              <button type="submit" className="btn-primary" disabled={loading}>
+                {loading ? 'Creating account...' : 'Create Account'}
+              </button>
+            </div>
+          </form>
 
-        <p className="alt-action">
-          Already have an account? <Link to="/login">Log in.</Link>
-        </p>
+          <p className="alt-action">
+            Already have an account? <Link to="/login">Log in.</Link>
+          </p>
+        </div>
+
+        <div className="signup-spotlight">
+          <PlayerSpotlightGrid />
+        </div>
       </div>
     </div>
   );

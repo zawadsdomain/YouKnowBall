@@ -1,18 +1,21 @@
+import PlayerSpotlightGrid from '../components/PlayerSpotlightGrid';
 import './Home.css';
 
 export default function Home() {
   return (
     <div className="home">
-      <div className="hero-section">
+      {/* <div className="hero-section">
         <h1>Welcome to You Know Ball</h1>
         <p className="subtitle">The NBA Virtual Stock Market</p>
         <p className="description">
           Trade virtual shares of your favorite NBA players. Build your portfolio,
           compete with friends, and prove your ball knowledge.
         </p>
-      </div>
+      </div> */}
 
-      <div className="features-grid">
+      <PlayerSpotlightGrid />
+
+      {/* <div className="features-grid">
         <div className="feature-card">
           <div className="feature-icon">🏀</div>
           <h3>Real Player Stocks</h3>
@@ -36,7 +39,7 @@ export default function Home() {
           <h3>Leaderboard</h3>
           <p>Compete globally or against your friends and climb the leaderboard.</p>
         </div>
-      </div>
+      </div> */}
 
       {/* <div className="cta-section">
         <h2>Ready to Get Started?</h2>
@@ -47,7 +50,7 @@ export default function Home() {
         </div>
       </div> */}
 
-      <div className="how-it-works">
+      {/* <div className="how-it-works">
         <h2>How It Works</h2>
         <div className="steps">
           <div className="step">
@@ -81,7 +84,7 @@ export default function Home() {
             <p>Climb the leaderboard and become the best trader</p>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

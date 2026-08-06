@@ -1,0 +1,132 @@
+.player-spotlight-section {
+  margin: 2.5rem 0 0;
+}
+
+.player-spotlight-heading {
+  margin-bottom: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: white;
+}
+
+.player-spotlight-heading h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.35rem;
+  color: white;
+}
+
+.player-spotlight-heading p {
+  color: #e9e9e9;
+  margin: 0;
+}
+
+.player-section {
+  margin-bottom: 1.5rem;
+}
+
+.player-section__header {
+  margin-bottom: 0.75rem;
+}
+
+.player-section__header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #121212;
+}
+
+.player-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1rem;
+}
+
+.player-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f8f8f8 100%);
+  border: 1px solid #e8e8e8;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.player-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.player-card__image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  background: #f0f0f0;
+}
+
+.player-card__content {
+  padding: 1rem;
+}
+
+.player-card__title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.player-card__title-row h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #121212;
+}
+
+.player-card__value {
+  font-weight: 700;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  padding: 0.25rem 0.45rem;
+  border-radius: 999px;
+}
+
+.player-card__value.positive {
+  background: rgba(34, 197, 94, 0.14);
+  color: #15803d;
+}
+
+.player-card__value.negative {
+  background: rgba(239, 68, 68, 0.14);
+  color: #dc2626;
+}
+
+.player-card__meta {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+  margin: 0.45rem 0 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.player-card__earnings {
+  margin: 0.6rem 0 0;
+  font-weight: 700;
+  color: #121212;
+}
+
+.player-section__empty {
+  margin: 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .player-cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .player-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}

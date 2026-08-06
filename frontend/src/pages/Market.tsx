@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import apiClient from '../services/api';
+// import apiClient from '../services/api';
 import './Market.css';
 
 interface Player {
@@ -17,6 +17,80 @@ interface Player {
   avgRating: number;
 }
 
+const mockPlayers: Player[] = [
+  {
+    id: '1',
+    name: 'LeBron James',
+    team: 'LAL',
+    position: 'SF',
+    price: 145.25,
+    priceChange: 3.12,
+    percentChange: 2.19,
+    volume: 15420,
+    marketCap: 1452500,
+    dayHigh: 147.8,
+    dayLow: 141.9,
+    avgRating: 4.9,
+  },
+  {
+    id: '2',
+    name: 'Stephen Curry',
+    team: 'GSW',
+    position: 'PG',
+    price: 152.6,
+    priceChange: -2.44,
+    percentChange: -1.57,
+    volume: 18930,
+    marketCap: 1526000,
+    dayHigh: 156.2,
+    dayLow: 151.1,
+    avgRating: 4.8,
+  },
+  {
+    id: '3',
+    name: 'Nikola Jokic',
+    team: 'DEN',
+    position: 'C',
+    price: 168.9,
+    priceChange: 5.73,
+    percentChange: 3.51,
+    volume: 12041,
+    marketCap: 1689000,
+    dayHigh: 170.2,
+    dayLow: 162.7,
+    avgRating: 5.0,
+  },
+  {
+    id: '4',
+    name: 'Jayson Tatum',
+    team: 'BOS',
+    position: 'SF',
+    price: 139.45,
+    priceChange: -0.88,
+    percentChange: -0.63,
+    volume: 8420,
+    marketCap: 1394500,
+    dayHigh: 141.3,
+    dayLow: 137.5,
+    avgRating: 4.6,
+  },
+  {
+    id: '5',
+    name: 'Giannis Antetokounmpo',
+    team: 'MIL',
+    position: 'PF',
+    price: 160.8,
+    priceChange: 4.15,
+    percentChange: 2.65,
+    volume: 11203,
+    marketCap: 1608000,
+    dayHigh: 162.9,
+    dayLow: 156.8,
+    avgRating: 4.9,
+  },
+];
+
+
 export default function Market() {
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,24 +101,9 @@ export default function Market() {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    const fetchPlayers = async () => {
-      try {
-        const response = await apiClient.get('/players');
-        setPlayers(response.data);
-        const uniqueTeams = [...new Set(response.data.map((p: Player) => p.team))] as string[];
-        setTeams(uniqueTeams.sort());
-      } catch (err) {
-        setError('Failed to load market data');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    setPlayers(mockPlayers);
 
-    fetchPlayers();
-    // Refresh market data every 30 seconds
-    const interval = setInterval(fetchPlayers, 30000);
-    return () => clearInterval(interval);
+    setLoading(false);
   }, []);
 
   const filteredAndSortedPlayers = players
