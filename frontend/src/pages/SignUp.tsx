@@ -78,6 +78,7 @@ export default function SignUp() {
 
           {error && <div className="error">{error}</div>}
 
+<<<<<<< HEAD
             <div className="actions">
               <button type="submit" className="btn-primary" disabled={loading}>
                 {loading ? 'Creating account...' : 'Create Account'}
@@ -93,6 +94,18 @@ export default function SignUp() {
         <div className="signup-spotlight">
           <PlayerSpotlightGrid />
         </div>
+=======
+          <div className="actions">
+            <button type="submit" className="btn-primary" disabled={loading}>
+              {loading ? 'Creating account...' : 'Create Account'}
+            </button>
+          </div>
+        </form>
+
+        <p className="alt-action">
+          Already have an account? <Link to="/login">Log in.</Link>
+        </p>
+>>>>>>> 68468ad (settings page, logout, delete account, fixed dashboard not working)
       </div>
     </div>
   );
